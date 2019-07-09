@@ -36,7 +36,9 @@ syn cluster markdownInline contains=
   \ markdownItalic,markdownBold,markdownBoldItalic,markdownStrike,markdownInlineCode,
   \ markdownPullRequestLinkInText,markdownUrlLinkInText,markdownUserLinkInText,
   \ markdownEmailLinkInText,markdownLinkContainer,markdownXmlComment,
-  \ markdownXmlElement,markdownXmlEmptyElement,markdownXmlEntities
+  \ markdownXmlElement,markdownXmlEmptyElement,markdownXmlEntities,
+  \ markdownTaskAttention,markdownTaskDone,markdownTaskQuestion,
+  \ markdownTaskChecked,markdownTaskUnchecked
 
 execute 'syn region markdownItalic matchgroup=markdownInlineDelimiter '
   \ . 'start="\%(\s\|_\|^\)\@<=\*\%(\s\|\*\|$\)\@!" end="\%(\s\|\*\)\@<!\*" '
@@ -274,6 +276,19 @@ syn match markdownXmlElement /\c<\([-A-Z0-9_$?!:,.]\+\)[^>]\{-}>\_.\{-}<\/\1>/ c
 syn match markdownXmlEmptyElement /\c<\([-A-Z0-9_$?!:,.]\+\)\%(\s\+[^>]\{-}\/>\|\s*\/>\)/ contains=@NoSpell
 syn match markdownXmlEntities /&#\?[0-9A-Za-z]\{1,8};/ contains=@NoSpell
 
+
+syn match markdownTaskChecked /.*\[x\].*/
+syn match markdownTaskUnchecked /.*\[ \].*/
+syn match markdownTaskAttention /#\!\s\+.*$/ contains=@NoSpell
+syn match markdownTaskDone /#\.\s\+.*$/ contains=@NoSpell
+syn match markdownTaskQuestion /#?\s\+.*$/ contains=@NoSpell
+
+hi def markdownTaskChecked ctermfg=119 ctermbg=NONE cterm=none guifg=#e3e0d7 guibg=#242424 gui=none
+hi def markdownTaskUnchecked ctermfg=228 ctermbg=NONE cterm=none guifg=#e3e0d7 guibg=#242424 gui=none
+hi def markdownTaskAttention ctermfg=210 ctermbg=NONE cterm=none guifg=#e3e0d7 guibg=#242424 gui=none
+hi def markdownTaskDone ctermfg=119 ctermbg=NONE cterm=none guifg=#e3e0d7 guibg=#242424 gui=none
+hi def markdownTaskQuestion ctermfg=123 ctermbg=NONE cterm=none guifg=#e3e0d7 guibg=#242424 gui=none
+
 " }}}
 
 
@@ -382,7 +397,7 @@ for s:level in range(1, 16)
     \ .   'markdownBlockquoteInListItemAtLevel' . (s:level) . ','
     \ .   'markdownListItemAtLevel' . (s:level+1) . ','
     \ .   '@markdownInline '
-    \ . 'start=/^' . (s:indented_as_container) . '\%([-*+]\|\d\+\.\)\%(\s\+\[[ x]\]\)\?\s\+/ '
+    \ . 'start=/^' . (s:indented_as_container) . '\%([-*+]\|\d\+\.\)\s\+/ '
     \ . 'end='
     \ .   '/'
     \ .     '\n\%(\n\n\)\@='
